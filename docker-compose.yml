@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15-alpine3.18
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backup-net
+
+  backup-db:
+    build:
+      context: .
+    networks:
+      - backup-net
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - PGHOST=db
+      - PGPORT=5432
+      - PGUSER=postgres
+      - SCHEDULE=@hourly
+      - PGPASSFILE=/app/.pgpass
+      - SERVICE_ACCOUNT_NAME=test-backup@temp-oqu3b42h.iam.gserviceaccount.com
+      - SERVICE_ACCOUNT_JSON_FILE=/app/temp-oqu3b42h-1cb2f75b082e.json
+      - BUCKET_NAME=test-backup-123kj
+networks:
+  backup-net:
+
