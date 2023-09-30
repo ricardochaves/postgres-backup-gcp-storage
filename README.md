@@ -32,7 +32,52 @@ You need use all of envs:
 
 ## Using my docker compose
 
-To build the project you need the the `ALPINE_VERSION` and `TARGETARCH`. In my case Im using:
+To build the project you need the `ALPINE_VERSION` and `TARGETARCH`. In my case, I'm using:
 
 `docker compose build --build-arg ALPINE_VERSION=alpine3.18 --build-arg TARGETARCH=amd64`
 
+## Using in your project:
+
+This is an example of how to add the backup to your docker compose.
+
+```yml
+version: "3.8"
+services:
+  db:
+    image: postgres:15-alpine3.18
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backup-net
+
+  backup-db:
+    image: ricardobchaves6/postgres-backup-gcp-storage:postgres15-alpine3.18
+    networks:
+      - backup-net
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./.pgpass:/app/.pgpass
+      - ./temp-oqu3b42h-1cb2f75b082e.json:/app/temp-oqu3b42h-1cb2f75b082e.json
+    environment:
+      - PGHOST=db
+      - PGPORT=5432
+      - PGUSER=postgres
+      - SCHEDULE=@hourly
+      - PGPASSFILE=/app/.pgpass
+      - SERVICE_ACCOUNT_NAME=test-backup@temp-oqu3b42h.iam.gserviceaccount.com
+      - SERVICE_ACCOUNT_JSON_FILE=/app/temp-oqu3b42h-1cb2f75b082e.json
+      - BUCKET_NAME=test-backup-123kj
+
+networks:
+  backup-net:
+```
