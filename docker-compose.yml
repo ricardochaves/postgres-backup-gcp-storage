@@ -32,6 +32,7 @@ services:
       - SERVICE_ACCOUNT_NAME=test-backup@temp-oqu3b42h.iam.gserviceaccount.com
       - SERVICE_ACCOUNT_JSON_FILE=/app/temp-oqu3b42h-1cb2f75b082e.json
       - BUCKET_NAME=test-backup-123kj
+
 networks:
   backup-net:
 

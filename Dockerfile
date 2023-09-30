@@ -1,4 +1,6 @@
-FROM python:3.11-alpine3.18
+ARG ALPINE_VERSION
+FROM python:3.11-alpine${ALPINE_VERSION}
+ARG TARGETARCH
 
 # install gsuilt
 RUN apk add --no-cache curl
@@ -12,9 +14,9 @@ RUN apk add --no-cache postgresql-client
 
 # install go-cron
 RUN apk add curl
-RUN curl -L https://github.com/ivoronin/go-cron/releases/download/v0.0.5/go-cron_0.0.5_linux_amd64.tar.gz -O
-RUN tar xvf go-cron_0.0.5_linux_amd64.tar.gz
-RUN rm go-cron_0.0.5_linux_amd64.tar.gz
+RUN curl -L https://github.com/ivoronin/go-cron/releases/download/v0.0.5/go-cron_0.0.5_linux_${TARGETARCH}.tar.gz -O
+RUN tar xvf go-cron_0.0.5_linux_${TARGETARCH}.tar.gz
+RUN rm go-cron_0.0.5_linux_${TARGETARCH}.tar.gz
 RUN mv go-cron /usr/local/bin/go-cron
 RUN chmod u+x /usr/local/bin/go-cron
 RUN apk del curl

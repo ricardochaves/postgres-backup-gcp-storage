@@ -1,4 +1,6 @@
 # Postgres Backup GCP Storage
+___
+[![build and push images](https://github.com/ricardochaves/postgres-backup-gcp-storage/actions/workflows/build-and-push-images.yml/badge.svg)](https://github.com/ricardochaves/postgres-backup-gcp-storage/actions/workflows/build-and-push-images.yml)
 
 This project use `pg_dumpall` command and `gsutil` to create a backup then send it do Google Cloud Store.
 
@@ -27,3 +29,10 @@ You need use all of envs:
 - `PGHOST`: Postgres Host
 - `PGPORT`: Postgres Port
 - `PGUSER`: Postgres User
+
+## Using my docker compose
+
+To build the project you need the the `ALPINE_VERSION` and `TARGETARCH`. In my case Im using:
+
+`docker compose build --build-arg ALPINE_VERSION=alpine3.18 --build-arg TARGETARCH=amd64`
+
