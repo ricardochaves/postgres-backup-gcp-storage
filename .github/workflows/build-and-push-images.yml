@@ -11,8 +11,12 @@ jobs:
     strategy:
       matrix:
         include:
+          - { postgres: 14, alpine: '3.17' }
           - { postgres: 14, alpine: '3.18' }
+          - { postgres: 15, alpine: '3.17' }
           - { postgres: 15, alpine: '3.18' }
+          - { postgres: 16, alpine: '3.17' }
+          - { postgres: 16, alpine: '3.18' }
 
     steps:
       - name: Checkout repository
@@ -38,6 +42,7 @@ jobs:
           tags: ricardobchaves6/postgres-backup-gcp-storage:postgres${{ matrix.postgres }}-alpine${{ matrix.alpine }}
           build-args: |
             ALPINE_VERSION=${{ matrix.alpine }}
+            POSTGRES_VERSION=${{ matrix.postgres }}
           platforms: |
             linux/amd64
             linux/arm64

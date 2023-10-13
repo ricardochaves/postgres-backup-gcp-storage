@@ -10,17 +10,17 @@ RUN ./google-cloud-sdk/install.sh
 RUN rm google-cloud-cli-447.0.0-linux-x86_64.tar.gz
 
 # install postgresql-client
-RUN apk add --no-cache postgresql-client
+ARG POSTGRES_VERSION
+RUN apk add --no-cache postgresql${POSTGRES_VERSION}-client --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main
 
 # install go-cron
-RUN apk add curl
 RUN curl -L https://github.com/ivoronin/go-cron/releases/download/v0.0.5/go-cron_0.0.5_linux_${TARGETARCH}.tar.gz -O
 RUN tar xvf go-cron_0.0.5_linux_${TARGETARCH}.tar.gz
 RUN rm go-cron_0.0.5_linux_${TARGETARCH}.tar.gz
 RUN mv go-cron /usr/local/bin/go-cron
 RUN chmod u+x /usr/local/bin/go-cron
-RUN apk del curl
 
+RUN apk del curl
 RUN rm -rf /var/cache/apk/*
 
 WORKDIR /app
